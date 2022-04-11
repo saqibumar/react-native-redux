@@ -10,9 +10,9 @@ import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Import Redux and React Redux Dependencies
 import { connect } from 'react-redux';
-import { loginUser, logoutUser, userInfo } from '../redux/actions/login/actions';
+// import { loginUser, logoutUser, userInfo } from '../redux/actions/login/actions';
 
-export default function Login({ userInfo, loginUser, logoutUser }) {
+export default function Login(/* { userInfo, loginUser, logoutUser } */) {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,7 +34,7 @@ export default function Login({ userInfo, loginUser, logoutUser }) {
       // .then((response) => response.json())
       .then(async(response) => {
           setLoading(false)
-          if (response.data.status === 'ok') {
+          // if (response.data.status === 'ok') {
             console.log(`response -> ${JSON.stringify(response.data.payload)}`)
             const user_info = {
               token: response.data.payload.token,
@@ -42,12 +42,12 @@ export default function Login({ userInfo, loginUser, logoutUser }) {
             }
             await AsyncStorage.setItem('@user_info', JSON.stringify(user_info))
             setLogin(true);
-            userInfo(user_info)
+            // userInfo(user_info)
             return navigation.navigate("Panels", { from: 'Login', data: JSON.stringify(response) })
-          }
+          /* }
           else {
             throw new Error('Unauthorized login attempt')
-          }
+          } */
           // return json;
       })
       .catch((error) => {

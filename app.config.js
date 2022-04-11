@@ -10,7 +10,7 @@ module.exports = () => {
         name: 'Currnt',
         version: '1.0.0',
         extra: {
-            CURRNT_API_URL: "http://192.168.1.18:9999"
+            CURRNT_API_URL: "http://192.168.1.175:9999"
         }
       };
     }

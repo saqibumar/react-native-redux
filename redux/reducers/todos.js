@@ -15,6 +15,7 @@ export default function(state = initialState, action) {
     }
     case DELETE_TODO: {
       const { id } = action.payload
+      //endpoint
       return {
         ...state,
         todo_list: state.todo_list.filter((todo) => todo.id != id)
