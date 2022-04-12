@@ -1,24 +1,23 @@
-import { LOGIN_USER, LOGOUT_USER, USER_INFO } from "./actionTypes";
+import { LOGIN_USER, LOGOUT_USER, SAVE_LOGGEDIN_USER } from "./actionTypes";
 
 let nextTodoId = 0;
 
-export const loginUser = (user_id, token) => ({
+export const loginUser = user_info => ({
   type: LOGIN_USER,
   payload: {
-    user_id,
-    token
+    user_info
   }
 });
 
-export const logoutUser = user_id => ({
+export const logoutUser = user_info => ({
   type: LOGOUT_USER,
   payload: {
-    user_id
+    user_info
   }
 });
 
-export const userInfo = user_info => ({
-  type: USER_INFO,
+export const saveLoggedInUser = user_info => ({
+  type: SAVE_LOGGEDIN_USER,
   payload: {
     user_info
   }

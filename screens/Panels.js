@@ -15,9 +15,14 @@ import { FontAwesome as Icon } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { deleteTodo } from '../redux/actions/todoapp/actions';
 import { DELETE_TODO } from '../redux/actions/todoapp/actionTypes';
+import { SAVE_LOGGEDIN_USER } from '../redux/actions/login/actionTypes';
 
 export default function Panels() {
+  const [isLoggedIn, setLogin] = useState(false);
   const selectedData = useSelector(state => state.todos.todo_list);
+  
+  const user_name = useSelector(state => `${state.login.first_name} ${state.login.last_name}` );
+ 
   const dispatch = useDispatch();
 
   const getData = async () => {
@@ -36,6 +41,20 @@ export default function Panels() {
       console.log('logout', JSON.stringify(dd))
       await AsyncStorage.removeItem('@user_info')
       console.log('logout success')
+      dispatch({
+        type: SAVE_LOGGEDIN_USER,
+        payload: { 
+          user_info: {
+            user: {
+              user_id: '',
+              first_name: '',
+              last_name: '',
+              email: '',
+              phone: ''
+            }
+          }
+        }
+      });
       return null
     } catch(e) {
       console.log('error on logout()', e)
@@ -57,20 +76,60 @@ export default function Panels() {
   const navigation = useNavigation();
   const [count, setCount] = useState(0);
 
+  // console.log('**++', user_name.trim().length);
+  useEffect(async() => {
+    const user = await getData();
+    console.log(`++++++++++++user = ${JSON.stringify(user)}`);
+    if (user) {
+      dispatch({
+        type: SAVE_LOGGEDIN_USER,
+        payload: { 
+          user_info: {
+            user: user.user
+          }
+        }
+      })
+    }
+    /* else
+    dispatch({
+        type: SAVE_LOGGEDIN_USER,
+        payload: { 
+          user_info: {
+            user: {
+              user_id: '',
+              first_name: '',
+              last_name: '',
+              email: '',
+              phone: ''
+            }
+          }
+        }
+      }); */
+  });
   return (
     <View style={styles.container}>
       <View style={styles.Middle}>
-        <Text style={styles.LoginText}>Panels</Text>
+        {user_name.trim().length>0 ? (<Text style={styles.LoginText}>Panels for {user_name}</Text>): (<></>)}
       </View>
+    
       <View style={styles.text2}>
-      <TouchableOpacity onPress={async() => {
+        {user_name.trim().length>0 ? 
+          (
+            <TouchableOpacity onPress={async() => {
               await logout()
-            } } ><Text style={styles.signupText}> Logout</Text></TouchableOpacity>
-
-        <Text>Already have account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")} ><Text style={styles.signupText}> Login </Text></TouchableOpacity>
+            } } ><Text style={styles.signupText}> Logout {user_name}</Text></TouchableOpacity>
+          ):
+          (
+            <>
+            <Text>Already have account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")} ><Text style={styles.signupText}> Login </Text></TouchableOpacity>
+            </>
+          )
+        }
+      
+        
       </View>
-
+     
       {/* Line */}
       <View style={styles.lineStyle}>
         <View style={{flex: 1, height: 1, backgroundColor: 'black'}} />

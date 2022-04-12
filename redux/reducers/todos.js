@@ -7,10 +7,11 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case ADD_TODO: {
+      // console.log('+++', action.payload);
       const { id, task } = action.payload
       return {
         ...state,
-        todo_list: [ ...state.todo_list, { id, task }]
+        todo_list: [ ...state.todo_list, { id, task }] // { id: id, task: task }
       };
     }
     case DELETE_TODO: {

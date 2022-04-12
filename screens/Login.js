@@ -10,18 +10,25 @@ import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Import Redux and React Redux Dependencies
 import { connect } from 'react-redux';
-import { loginUser, logoutUser, userInfo } from '../redux/actions/login/actions';
+import { loginUser, logoutUser, saveLoggedInUser } from '../redux/actions/login/actions';
 
-export default function Login({ userInfo, loginUser, logoutUser }) {
+//export default function Login(saveLoggedInUser/*{ userInfo, loginUser, logoutUser }*/) {
+  const Login = ({ saveLoggedInUser }) => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setLoading] = useState(false);
     const [isLoggedIn, setLogin] = useState(false);
-    const [user_info, setUserInfo] = useState(null);
+    const [UserInfo, setUserInfo] = useState('');
 
     const handleLogin = () => {
       setLoading(true);
+      /* const user_info = {
+        uni_email: email, //'saqib@logicloud.mx',
+        uni_password: password, //</View>'70ee07'
+    }
+      loginUser(user_info) */
+      
       const url = `${Constants.manifest.extra.CURRNT_API_URL}/api/ks/mobile/v1/login`;
       console.log(`url -> ${url}`)
       axios.post(
@@ -34,21 +41,22 @@ export default function Login({ userInfo, loginUser, logoutUser }) {
       // .then((response) => response.json())
       .then(async(response) => {
           setLoading(false)
-          if (response.data.status === 'ok') {
-            console.log(`response -> ${JSON.stringify(response.data.payload)}`)
-            const user_info = {
-              token: response.data.payload.token,
-              user_email: email
-            }
-            await AsyncStorage.setItem('@user_info', JSON.stringify(user_info))
+           if (response.data.status === 'ok') {
+            //console.loresponse -> ${JSON.stringify(response.data.payload)}`)
+           
+            //console.log('***::', user_info);
             setLogin(true);
-            userInfo(user_info)
+            
+            setUserInfo(response.data.payload);
+            // console.log('***-->',UserInfo);
+            saveLoggedInUser(response.data.payload);
+            await AsyncStorage.setItem('@user_info', JSON.stringify(response.data.payload))
             return navigation.navigate("Panels", { from: 'Login', data: JSON.stringify(response) })
           }
           else {
             throw new Error('Unauthorized login attempt')
           }
-          // return json;
+          return json;
       })
       .catch((error) => {
           setLoading(false)
@@ -174,16 +182,21 @@ const styles = StyleSheet.create({
   },
 });
 
-/* const mapStateToProps = (state, ownProps) => {
-  console.log(state.todos.todo_list)
+ const mapStateToProps = (state, ownProps) => {
+  console.log("STATE ", state)
 return {
-  todo_list: state.todos.todo_list,
+  //todo_list: state.todos.todo_list,
+  email: state.login.email,
+  first_name: state.login.first_name,
+  last_name: state.login.last_name,
+  phone: state.login.phone,
+  //user_id: state.login.user_id
 }
 }
 
-const mapDispatchToProps = { userInfo, loginUser, logoutUser }
+const mapDispatchToProps = { saveLoggedInUser, logoutUser }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login) */
+)(Login) 

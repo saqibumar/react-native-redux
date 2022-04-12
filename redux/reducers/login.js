@@ -1,17 +1,27 @@
-import { LOGIN_USER, LOGOUT_USER } from "../actions/login/actionTypes";
+import { SAVE_LOGGEDIN_USER, LOGOUT_USER } from "../actions/login/actionTypes";
 
 const initialState = {
     user_id: '',
-    token: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: ''
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case LOGIN_USER: {
-      const { user_id, token } = action.payload
+    case  SAVE_LOGGEDIN_USER: {
+      const {token, user} = action.payload.user_info
+      // console.log('>>>>>>',user.email);
+      const {first_name, last_name, email, phone} = user
       return {
         ...state,
-        user_id: [ ...state, { user_id, token }]
+        //todo_list: [ ...state.todo_list, { id, task }] // { id: id, task: task }
+        //user_id: [ ...state.user_id, { id:'Chrix:' }],
+        first_name:  first_name,
+        last_name:  last_name ,
+        email:  email,
+        phone:  phone 
       };
     }
     case LOGOUT_USER: {
